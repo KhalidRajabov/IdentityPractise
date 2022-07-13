@@ -69,12 +69,12 @@
                                 {
                                       <li class="recent-posts">
                                         <div class="recent-posts-image">
-                                            <a href="blog-details.html"><img src="~/assets/img/blog/@item.ImageUrl" alt="post thumb"></a>
+                                            <a asp-action="detail" asp-controller="blog" asp-route-id="@item.Id"><img width="150"height="70" src="~/assets/img/blog/@item.ImageUrl" alt="post thumb"></a>
                                         </div>
                                         <div class="recent-posts-body">
                                             <span class="recent-posts-meta">@item.CreatedTime.ToString("dddd, dd MMMM yyyy")</span>
-                                            <h6 class="recent-posts-title"><a asp-action="detail" asp-route-id="@item.Id">@item.Title</a></h6>
-                                            <h6 class="recent-posts-title"><a asp-action="detail" asp-route-id="@item.Id">@(item.Description.Substring(0, 12)+"...")</a></h6>
+                                            <h5 class="recent-posts-title"><a asp-action="detail" asp-route-id="@item.Id">@(item.Title.Substring(0, 12)+"...")</a></h5>
+                                            <p class="recent-posts-title"><a asp-action="detail" asp-route-id="@item.Id">@(item.Description.Substring(0, 12)+"...")</a></p>
                                         </div>
                                     </li>
                                 }
@@ -120,7 +120,7 @@
                                     </div>
                                     <div class="blog-content blog-details">
                                         <h5 class="blog-title">
-                                            Celebrity Daughter Opens About Upto Having Her Eye
+                                            @Model.Blog.Title
                                         </h5>
                                         <ul class="blog-meta">
                                             <li><span>By: </span>Admin,</li>
@@ -136,50 +136,29 @@
 
                                 <!-- comment area start -->
                             <div class="comment-section section-padding">
-                                <h5>03 Comment</h5>
+                                <h5>@Model.Blog.Comments.Count Comment</h5>
                                 <ul>
-                                    <li>
+                                    @foreach (var item in Model.Blog.Comments)
+                                   {
+                                       <li>
                                         <div class="author-avatar">
                                             <img src="~/assets/img/blog/comment-icon.png" alt="">
                                         </div>
                                         <div class="comment-body">
-                                            <span class="reply-btn"><a href="#">Reply</a></span>
+                                            @if (item.AppUserId==ViewBag.AppuserId)
+                                                {
+                                                    <span class="reply-btn"><a asp-action="deletecomment" asp-route-id="@item.Id" asp-route-BlogId="@Model.Blog.Id">Delete</a></span>
+                                                }
                                             <h5 class="comment-author">Admin</h5>
                                             <div class="comment-post-date">
-                                                15 Dec, 2019 at 9:30pm
+                                                @item.CreatedTime.ToString("dddd, dd MMMM yyyy")
                                             </div>
-                                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim maiores
-                                                adipisci optio ex, laboriosam facilis non pariatur itaque illo sunt?</p>
+                                            <p>@item.Message</p>
                                         </div>
                                     </li>
-                                    <li class="comment-children">
-                                        <div class="author-avatar">
-                                            <img src="~/assets/img/blog/comment-icon.png" alt="">
-                                        </div>
-                                        <div class="comment-body">
-                                            <span class="reply-btn"><a href="#">Reply</a></span>
-                                            <h5 class="comment-author">Admin</h5>
-                                            <div class="comment-post-date">
-                                                20 Nov, 2019 at 9:30pm
-                                            </div>
-                                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim maiores
-                                                adipisci optio ex, laboriosam facilis non pariatur itaque illo sunt?</p>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="author-avatar">
-                                            <img src="~/assets/img/blog/comment-icon.png" alt="">
-                                        </div>
-                                        <div class="comment-body">
-                                            <span class="reply-btn"><a href="#">Reply</a></span>
-                                            <h5 class="comment-author">Admin</h5>
-                                            <div class="comment-post-date">
-                                                25 Jan, 2019 at 9:30pm
-                                            </div>
-                                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim maiores
-                                                adipisci optio ex, laboriosam facilis non pariatur itaque illo sunt?</p>
-                                        </div>
-                                    </li>
+                                   }
+                                 
+                                 
                                 </ul>
                             </div>
                             <!-- comment area end -->
@@ -188,28 +167,17 @@
                             <div class="blog-comment-wrapper">
                                 <h5>Leave A Reply</h5>
                                 <p>Email address will not be published. Required fields are marked *</p>
-                                <form action="#">
+                                <form asp-action="addcomment">
                                     <div class="comment-post-box">
                                         <div class="row">
                                             <div class="col-12">
                                                 <label>Comment</label>
-                                                <textarea name="commnet" placeholder="Write a comment"></textarea>
-                                            </div>
-                                            <div class="col-lg-4 col-md-4">
-                                                <label>Name</label>
-                                                <input type="text" class="coment-field" placeholder="Name">
-                                            </div>
-                                            <div class="col-lg-4 col-md-4">
-                                                <label>Email</label>
-                                                <input type="text" class="coment-field" placeholder="Email">
-                                            </div>
-                                            <div class="col-lg-4 col-md-4">
-                                                <label>Website</label>
-                                                <input type="text" class="coment-field" placeholder="Website">
+                                                <textarea name="Message" placeholder="Write a comment"></textarea>
+                                                <input type="hidden" name="BlogId" value="@Model.Blog.Id"/>
                                             </div>
                                             <div class="col-12">
                                                 <div class="coment-btn">
-                                                    <input class="btn" type="submit" name="submit" value="POST COMMENT">
+                                                    <input class="btn" type="submit" value="POST COMMENT">
                                                 </div>
                                             </div>
                                         </div>

@@ -1,5 +1,6 @@
 ﻿using IdentityPractise.DAL;
 using IdentityPractise.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -13,15 +14,24 @@ namespace IdentityPractise.Controllers
     public class HomeController : Controller
     {
         private readonly AppDbContext _context;
-
-        public HomeController(AppDbContext context)
+        private readonly UserManager<AppUser> _userManager;
+        public HomeController(AppDbContext context, UserManager<AppUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                AppUser user = await _userManager.FindByNameAsync(User.Identity.Name);
+                ViewBag.Fullname = user.Fullname;
+            }
             return View(_context.Blogs.ToList());
         }
     }
 }
+
+
+//45-ci deqiqe
